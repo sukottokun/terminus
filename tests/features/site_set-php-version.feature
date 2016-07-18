@@ -3,24 +3,21 @@ Feature: Managing the PHP version of sites and environments
   As a user
   I need to be able to change which PHP version my site and environments are using.
 
-  Background: I am authenticated and I have a site named [[test_site_name]]
+  Background: I am authenticated and have a site named [[test_site_name]]
     Given I am authenticated
     And a site named "[[test_site_name]]"
-
-  @vcr site_set-php-version
+    
+  @vcr site_set-php-version 
   Scenario: Setting the site's PHP version
     When I run "terminus site set-php-version --site=[[test_site_name]] --version=5.5"
-    And I get info for the site "[[test_site_name]]"
-    Then I should get: "5.5"
+    Then I should get: "Sorry, setting the PHP version has moved to pantheon.yml. You can find out how to change it here: https://pantheon.io/docs/php-versions/"
 
   @vcr site_set-php-version_environment
-  Scenario: Setting an environment's PHP version
-    When I run "terminus site set-php-version --site=[[test_site_name]] --env=dev --version=5.3"
-    And I get info for the "dev" environment of "[[test_site_name]]"
-    Then I should get: "5.3"
+  Scenario: Setting the site's PHP version
+    When I run "terminus site set-php-version --site=[[test_site_name]] --version=5.3"
+    Then I should get: "Sorry, setting the PHP version has moved to pantheon.yml. You can find out how to change it here: https://pantheon.io/docs/php-versions/"
 
   @vcr site_set-php-version_environment_unset
   Scenario: Setting an environment's PHP version to the site default
     When I run "terminus site set-php-version --site=[[test_site_name]] --env=dev --version=default"
-    And I get info for the "dev" environment of "[[test_site_name]]"
-    Then I should get one of the following: "5.3, 5.5"
+    Then I should get: "Sorry, setting the PHP version has moved to pantheon.yml. You can find out how to change it here: https://pantheon.io/docs/php-versions/"

@@ -34,6 +34,9 @@ All notable changes to this project starting with the 0.6.0 release will be docu
 - Switched all remaining date-formatted fields to use the format specified by `TERMINUS_DATE_FORMAT`. (#1093)
 - Handling of directories in Windows has been fixed. (#1094)
 
+### Deprecated
+- site set-php-version returns error and directs to instructions for pantheon.yml. (#1121)
+
 ## [0.11.1] - 2016-03-30
 ### Added
 - New command `site drush-version` to check the Drush version number of any or all environments. (#1001)
@@ -380,6 +383,7 @@ All notable changes to this project starting with the 0.6.0 release will be docu
 - `sites delete` will be removed in v1.0.0 (#370)
 - `site jobs` will be removed in v0.7.0 (#412)
 - `site notifications` will be removed in v0.7.0 (#412)
+
 
 ###Removed
 - Removed --branch-create flag from `sites code` (#505)

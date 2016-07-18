@@ -1794,33 +1794,10 @@ class SiteCommand extends TerminusCommand {
    * @subcommand set-php-version
    */
   public function setPhpVersion($args, $assoc_args) {
-    $params  = ['args' => $assoc_args,];
-    $site    = $this->sites->get($this->input()->siteName($params));
-
-    if (isset($assoc_args['env'])) {
-      $env               = $site->environments->get($assoc_args['env']);
-      $params['choices'] = [
-        'default' => 'default',
-        53        => '5.3',
-        55        => '5.5',
-        56        => '5.6',
-        70        => '7.0',
-      ];
-      $version           = $this->input()->phpVersion($params);
-      if ($version != 'default') {
-        $workflow = $env->setPhpVersion($version);
-      } else {
-        $workflow = $env->unsetPhpVersion();
-      }
-      $workflow->wait();
-      $this->workflowOutput($workflow);
-    } else {
-      $version  = $this->input()->phpVersion($params);
-      $workflow = $site->setPhpVersion($version);
-      $workflow->wait();
-      $this->workflowOutput($workflow);
-      $site->fetchAttributes();
-    }
+          $this->failure(
+            'Sorry, setting the PHP version has moved to pantheon.yml. 
+            You can find out how to change it here: https://pantheon.io/docs/php-versions/'
+          );
   }
 
   /**
