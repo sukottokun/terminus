@@ -2,7 +2,7 @@
 
 namespace Terminus\Models;
 
-use Terminus\Caches\TokensCache;
+use Terminus\Collections\Tokens;
 use Terminus\Config;
 use Terminus\Exceptions\TerminusException;
 use Terminus\Request;
@@ -14,9 +14,9 @@ class Auth extends TerminusModel {
    */
   protected $request;
   /**
-   * @var TokensCache
+   * @var Tokens
    */
-  private $tokens_cache;
+  private $tokens;
 
   /**
    * Object constructor
@@ -25,9 +25,8 @@ class Auth extends TerminusModel {
    * @param array  $options    Options with which to configure this model
    */
   public function __construct($attributes = null, array $options = []) {
-    $this->tokens_cache = new TokensCache();
-    $this->attributes = $attributes;
-    $this->request = new Request();
+      parent::__construct($attributes, $options);
+    $this->tokens = new Tokens();
   }
 
   /**
@@ -36,7 +35,7 @@ class Auth extends TerminusModel {
    * @return string[]
    */
   public function getAllSavedTokenEmails() {
-    $emails = $this->tokens_cache->getAllSavedTokenEmails();
+    $emails = $this->tokens->ids();
     return $emails;
   }
 
@@ -75,27 +74,20 @@ class Auth extends TerminusModel {
    * Execute the login based on a machine token
    *
    * @param string[] $args Elements as follow:
-   *   string token Machine token to initiate login with
-   *   string email Email address to locate token with
+   *   string machine-token Machine token to initiate login with
+   *   string email         Email address to locate token with
    * @return bool True if login succeeded
    * @throws TerminusException
    */
   public function logInViaMachineToken($args) {
-    if (isset($args['token'])) {
-      $token = $args['token'];
+    if (isset($args['machine-token'])) {
+        $token = $this->tokens->get($args['machine-token'])
     } elseif (isset($args['email'])) {
-      $token = $this->tokens_cache->findByEmail($args['email'])['token'];
-      if (!$token) {
-        throw new TerminusException(
-          'No machine token for "{email}" found.',
-          compact('email'),
-          1
-        );
-      }
+        $token = $this->tokens->get($args['email']);
     }
     $options = [
       'form_params' => [
-        'machine_token' => $token,
+        'machine_token' => $token->get('token'),
         'client'        => 'terminus',
       ],
       'method' => 'post',
@@ -119,9 +111,7 @@ class Auth extends TerminusModel {
     $user->fetch();
     $user_data = $user->serialize();
     if (isset($args['token'])) {
-      $this->tokens_cache->add(
-        ['email' => $user_data['email'], 'token' => $token,]
-      );
+      $this->tokens->create(['email' => $user_data['email'], 'token' => $token,]);
     }
     return true;
   }
@@ -172,17 +162,6 @@ class Auth extends TerminusModel {
    */
   public function logOut() {
       Session::instance()->destroy();
-  }
-
-  /**
-   * Checks to see whether the email has been set with a machine token
-   *
-   * @param string $email Email address to check for
-   * @return bool
-   */
-  public function tokenExistsForEmail($email) {
-    $file_exists = $this->tokens_cache->tokenExistsForEmail($email);
-    return $file_exists;
   }
 
   /**

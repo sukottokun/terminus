@@ -2,6 +2,7 @@
 
 namespace Terminus\Commands;
 
+use Terminus\Collections\Tokens;
 use Terminus\Config;
 use Terminus\Models\Auth;
 use Terminus\Session;
@@ -46,77 +47,40 @@ class AuthCommand extends TerminusCommand {
    * : dump call information when logging in.
    */
   public function login($args, $assoc_args) {
-    $config = Config::getAll();
-    $auth   = $this->auth;
-    $tokens = $auth->getAllSavedTokenEmails();
+      $tokens       = new Tokens();
+      $tokens_array = $tokens->all();
+      $options      = ['email' => null, 'machine-token' => null,];
     if (!empty($args)) {
-      $email = array_shift($args);
-    }
-    if (isset($assoc_args['machine-token'])
-      && ($assoc_args['machine-token'] !== true)
-    ) {
-      // Try to log in using a machine token, if provided.
-      $token_data = ['token' => $assoc_args['machine-token']];
-      $auth->logInViaMachineToken($token_data);
-      $this->log()->info('Logging in via machine token');
-    } elseif (isset($email) && !isset($assoc_args['password'])
-      && $auth->tokenExistsForEmail($email)
-    ) {
-      // Try to log in using a machine token, if the account email was provided.
-      $this->log()->info(
-        'Found a machine token for "{email}".',
-        compact('email')
-      );
-      $auth->logInViaMachineToken(compact('email'));
-      $this->log()->info('Logging in via machine token');
-    } elseif (!empty($config['user'])
-      && !isset($assoc_args['password'])
-      && $auth->tokenExistsForEmail($config['user'])
-    ) {
-      // Try to log in using a machine token, if $_SERVER provides account email.
-      $this->log()->info(
-        'Found a machine token for "{email}".',
-        ['email' => $config['user'],]
-      );
-      $auth->logInViaMachineToken(['email' => $config['user']]);
-      $this->log()->info('Logging in via machine token');
-    } elseif (!isset($email) && (count($tokens) === 1)) {
-      // Try to log in using a machine token, if there is only one saved token.
-      $email = array_shift($tokens);
-      $auth->logInViaMachineToken(compact('email'));
-      $this->log()->info(
-        'Found a machine token for "{email}".',
-        compact('email')
-      );
-      $auth->logInViaMachineToken(compact('email'));
-      $this->log()->info('Logging in via machine token');
-    } else if (isset($email) && isset($assoc_args['password'])) {
-      // Log in via username and password, if present.
-      $password = $assoc_args['password'];
-      $auth->logInViaUsernameAndPassword(
-        $email,
-        $assoc_args['password']
-      );
-    } else {
-      $message = "visit the dashboard to generate a machine token:\n{url}";
-      $context = ['url' => $auth->getMachineTokenCreationUrl()];
-      if (count($tokens) > 1) {
-        $msg  = "Tokens were saved for the following email addresses:\n";
-        $msg .= "{tokens}\n You may log in via `terminus auth login <email>`";
-        $message = "$msg, or you may $message";
-        $context['tokens'] = implode("\n", $tokens);
-      } else {
-        $message = "Please $message";
+      $options['email'] = array_shift($args);
+      if (isset($assoc_args['password'])) {
+        $this->auth->logInViaUsernameAndPassword($options['email'], $assoc_args['password']);
       }
-      $this->failure($message, $context);
+    } elseif (isset($assoc_args['machine-token'])) {
+      $options['machine-token'] = $assoc_args['machine-token'];
+    } elseif (count($tokens_array) == 1) {
+      $options['email'] = $tokens_array[0]->get('email');
+      $this->log()->notice('Found a machine token for {email}.', $options);
     }
-    if (!isset($email)) {
-      $user = Session::getUser();
-      $user->fetch();
-      $user_data = $user->serialize();
-      $email     = $user_data['email'];
+    if (is_null($options['machine-token']) && is_null($options['email'])) {
+      if (count($tokens_array) > 1) {
+        throw new TerminusException(
+          "Tokens were saved for the following email addresses:\n{tokens}\n You may
+              log in via `terminus auth:login <email>` , or you may visit the dashboard 
+              to generate a machine token:\n {url}"
+          [
+            'url' => $this->auth->getMachineTokenCreationUrl(),
+            'tokens' => implode("\n", $tokens_array),
+          ]
+        );
+      } else {
+        throw new TerminusException(
+        "Please visit the dashboard to generate a machine token:\n {url}"
+        ['url' => $this->auth->getMachineTokenCreationUrl(),]
+      }
+
     }
-    $this->log()->info('Logged in as {email}.', compact('email'));
+      $this->log()->notice('Logging in via machine token.');
+      $auth->logInViaMachineToken($options);
 
     $this->log()->debug(get_defined_vars());
     $this->helpers->launch->launchSelf(
