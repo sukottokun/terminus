@@ -40,10 +40,7 @@ abstract class TerminusCollection {
    * @return TerminusModel
    */
   public function add($model_data, array $options = []) {
-    $options = array_merge(
-      ['id' => $model_data->id, 'collection' => $this,],
-      $options
-    );
+    $options = array_merge(['collection' => $this,], $options);
     $model = new $this->collected_class($model_data, $options);
     $this->models[$model_data->id] = $model;
     return $model;

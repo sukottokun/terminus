@@ -47,26 +47,25 @@ class AuthCommand extends TerminusCommand {
    * : dump call information when logging in.
    */
   public function login($args, $assoc_args) {
-      $tokens       = new Tokens();
-      $tokens_array = $tokens->all();
-      $options      = ['email' => null, 'machine-token' => null,];
+    $tokens = new Tokens();
+    $tokens_array = $tokens->all();
+    $options = ['email' => null, 'machine-token' => null,];
     if (!empty($args)) {
       $options['email'] = array_shift($args);
-      if (isset($assoc_args['password'])) {
-        $this->auth->logInViaUsernameAndPassword($options['email'], $assoc_args['password']);
-      }
     } elseif (isset($assoc_args['machine-token'])) {
       $options['machine-token'] = $assoc_args['machine-token'];
     } elseif (count($tokens_array) == 1) {
       $options['email'] = $tokens_array[0]->get('email');
       $this->log()->notice('Found a machine token for {email}.', $options);
+    } elseif (!empty($email = Config::get('user'))) {
+      $options['email'] = $email;
     }
     if (is_null($options['machine-token']) && is_null($options['email'])) {
       if (count($tokens_array) > 1) {
         throw new TerminusException(
           "Tokens were saved for the following email addresses:\n{tokens}\n You may
               log in via `terminus auth:login <email>` , or you may visit the dashboard 
-              to generate a machine token:\n {url}"
+              to generate a machine token:\n {url}",
           [
             'url' => $this->auth->getMachineTokenCreationUrl(),
             'tokens' => implode("\n", $tokens_array),
@@ -74,18 +73,22 @@ class AuthCommand extends TerminusCommand {
         );
       } else {
         throw new TerminusException(
-        "Please visit the dashboard to generate a machine token:\n {url}"
-        ['url' => $this->auth->getMachineTokenCreationUrl(),]
+          "Please visit the dashboard to generate a machine token:\n {url}",
+          ['url' => $this->auth->getMachineTokenCreationUrl(),]
+        );
       }
 
     }
-      $this->log()->notice('Logging in via machine token.');
-      $auth->logInViaMachineToken($options);
+    if (isset($assoc_args['password'])) {
+      $this->log()->info('Logging in via email and password.');
+      $this->auth->logInViaUsernameAndPassword($options['email'], $assoc_args['password']);
+    } else {
+      $this->log()->info('Logging in via machine token.');
+      $this->auth->logInViaMachineToken($options);
+    }
 
     $this->log()->debug(get_defined_vars());
-    $this->helpers->launch->launchSelf(
-      ['command' => 'art', 'args' => ['fist']]
-    );
+    $this->helpers->launch->launchSelf(['command' => 'art', 'args' => ['fist']]);
   }
 
   /**

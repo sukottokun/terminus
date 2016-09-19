@@ -39,7 +39,7 @@ class Tokens extends TerminusCollection {
      * @throws TerminusException
      */
   public function create(array $token_data = []) {
-    $file_name          = "{$this->directory}/{$token_data['email']}";
+    $file_name = "{$this->directory}/{$token_data['email']}";
     $token_data['date'] = time();
     $status = (boolean)file_put_contents($file_name, json_encode($token_data));
     return $status;
@@ -55,6 +55,7 @@ class Tokens extends TerminusCollection {
     $tokens = $this->getCollectionData($options);
     foreach ($tokens as $token) {
       $token->id = $token->email;
+      die(print_r($token, true));
       $this->add($token);
     }
     return $this;

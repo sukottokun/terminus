@@ -81,7 +81,7 @@ class Auth extends TerminusModel {
    */
   public function logInViaMachineToken($args) {
     if (isset($args['machine-token'])) {
-        $token = $this->tokens->get($args['machine-token'])
+        $token = $this->tokens->get($args['machine-token']);
     } elseif (isset($args['email'])) {
         $token = $this->tokens->get($args['email']);
     }
