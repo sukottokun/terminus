@@ -107,6 +107,7 @@ class Auth extends TerminusModel {
         $options
       );
     } catch (\Exception $e) {
+      var_dump($e->getMessage());
       throw new TerminusException(
         'The provided machine token is not valid.',
         [],

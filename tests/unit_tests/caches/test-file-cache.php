@@ -1,6 +1,7 @@
 <?php
 
 use Terminus\Caches\FileCache;
+use Terminus\Config;
 
 /**
  * Testing class for Terminus\Caches\FileCache
@@ -23,31 +24,29 @@ class FileCacheTest extends PHPUnit_Framework_TestCase {
 
   public function testClean() {
     //Setting a file we know will have to be cleaned
-    $home      = getenv('HOME');
-    $dir_name  = "$home/.terminus/cache";
+    $dir_name      = Config::get('cache_dir');
     $file_name = "$dir_name/" . $this->test_file_name;
     exec("touch -t 200401230000 $file_name");
-    $old_count = count(scandir($dir_name));
+    $this->assertFileExists($file_name);
     $this->file_cache->clean();
-    $new_count = count(scandir($dir_name));
-    $this->assertTrue($new_count < $old_count);
+    $this->assertFileNotExists($file_name);
 
     //Running again when nothing new should be removed
+    $new_count = count(scandir($dir_name));
     $this->file_cache->clean();
     $new_new_count = count(scandir($dir_name));
-    $this->assertTrue($new_count == $new_new_count);
+    $this->assertEquals($new_count, $new_new_count);
   }
 
   public function testFlush() {
     //Setting a file so we know something will be removed
-    $home      = getenv('HOME');
-    $dir_name  = "$home/.terminus/cache";
+    $dir_name      = Config::get('cache_dir');
     $file_name = "$dir_name/" . $this->test_file_name;
     setOutputDestination($file_name);
     $old_count = count(scandir($dir_name));
     $this->file_cache->flush();
     $new_count = count(scandir($dir_name));
-    $this->assertTrue($new_count < $old_count);
+    $this->assertGreaterThan($new_count, $old_count);
 
     //Running again when nothing should be removed
     $this->file_cache->flush();
@@ -113,8 +112,7 @@ class FileCacheTest extends PHPUnit_Framework_TestCase {
   }
 
   private function getFileName() {
-    $home      = getenv('HOME');
-    $dir_name  = "$home/.terminus/cache";
+    $dir_name      = Config::get('cache_dir');
     $file_name = "$dir_name/" . $this->test_file_name;
     return $file_name;
   }

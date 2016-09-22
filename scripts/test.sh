@@ -11,6 +11,9 @@ for f in $( git diff-tree $TRAVIS_COMMIT --name-status -r | grep php | grep -v "
 
 ./scripts/lint.sh
 
+export TERMINUS_CACHE_DIR="$HOME/.terminus/testcache"
+export TERMINUS_TOKENS_DIR="$HOME/.terminus/testcache/tokens"
+
 # Run the functional tests
 behat_cmd="vendor/bin/behat --colors -c=tests/config/behat.yml --suite="
 behat_cmd_10="vendor/bin/behat --colors -c=tests/config/behat_10.yml --suite="

@@ -7,6 +7,8 @@
 // The CL args used to initialize these tests would change how Terminus runs.
 unset($GLOBALS['argv']);
 
+var_dump($_SERVER);
+
 define('TERMINUS_LOG_DIR', '/tmp/');
 define('TERMINUS_TEST_ROOT', dirname(__DIR__) . '/..');
 
@@ -22,6 +24,7 @@ use Terminus\Session;
 
 \VCR\VCR::configure()->enableRequestMatchers(array('method', 'url', 'body'));
 setDummyCredentials();
+\VCR\VCR::configure()->setMode('none');
 
 // Prevent API requests from being made in CI Environment
 $ci_environment = getenv('CI');
