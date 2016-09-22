@@ -24,10 +24,11 @@ Feature: CLI Commands
     Answer yes to all prompts
     """
 
+    # TODO: Remove this hardcoding or express this story in a more meaningful way
   Scenario: Clearing a session
-    When I run "touch ~/.terminus/cache/session"
+    When I run "touch ~/.terminus/testcache/session"
     And I run "terminus cli session-clear"
-    And I run "ls ~/.terminus/cache"
+    And I run "ls ~/.terminus/testcache"
     Then I should not get:
     """
     session
