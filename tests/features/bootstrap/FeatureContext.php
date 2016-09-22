@@ -617,7 +617,7 @@ class FeatureContext implements Context {
         . ' ' . $command;
     }
     if (isset($this->_connection_info['host'])) {
-      $command = 'TERMINUS_CACHE_DIR=' . Config::get('cache_dir') . 
+      $command = 'TERMINUS_CACHE_DIR=' . Config::get('cache_dir') .
         "TERMINUS_HOST={$this->_connection_info['host']} $command";
     }
     $command = preg_replace($regex, $terminus_cmd, $command);
