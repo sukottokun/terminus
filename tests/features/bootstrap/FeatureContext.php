@@ -2,6 +2,7 @@
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
+use Terminus\Config;
 
 /**
  * Features context for Behat feature testing
@@ -24,7 +25,6 @@ class FeatureContext implements Context {
     $this->cliroot          = dirname(dirname(__DIR__)) . '/..';
     $this->_parameters      = $parameters;
     $this->_start_time      = time();
-    $this->_cache_file_name = $_SERVER['HOME'] . '/.terminus/testcache/session';
     $this->_connection_info = array(
       'username' => $parameters['username'],
       'password' => $parameters['password'],
@@ -617,15 +617,13 @@ class FeatureContext implements Context {
         . ' ' . $command;
     }
     if (isset($this->_connection_info['host'])) {
-      $command = 'TERMINUS_HOST=' . $this->_connection_info['host']
-        . ' ' . $command;
+      $command = 'TERMINUS_CACHE_DIR=' . Config::get('cache_dir') . 
+        "TERMINUS_HOST={$this->_connection_info['host']} $command";
     }
     $command = preg_replace($regex, $terminus_cmd, $command);
-    //echo $command . PHP_EOL;
     ob_start();
     passthru($command . ' 2>&1');
     $this->_output = ob_get_clean();
-    //echo $this->_output . PHP_EOL;
     return $this->_output;
   }
 

@@ -5,13 +5,17 @@ namespace Pantheon\Terminus\FeatureTests;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
+use Robo\Contract\ConfigAwareInterface;
+use Robo\Common\ConfigAwareTrait;
 use Terminus\Exceptions\TerminusException;
 
 /**
  * Features context for Behat feature testing
  */
-class FeatureContext implements Context, SnippetAcceptingContext
+class FeatureContext implements ConfigAwareInterface, Context, SnippetAcceptingContext
 {
+    use ConfigAwareTrait;
+
     public $cliroot = '';
     private $cache_file_name;
     private $cache_token_dir;
@@ -31,8 +35,6 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->cliroot          = dirname(dirname(__DIR__)) . '/..';
         $this->parameters      = $parameters;
         $this->start_time      = time();
-        $this->cache_file_name = $_SERVER['HOME'] . '/.terminus/testcache/session';
-        $this->cache_token_dir = $_SERVER['HOME'] . '/.terminus/testcache/tokens';
         $this->connection_info = ['host' => $parameters['host'], 'machine_token' => $parameters['machine_token'],];
     }
 
@@ -646,7 +648,8 @@ class FeatureContext implements Context, SnippetAcceptingContext
         if (!empty($mode = $this->parameters['vcr_mode'])) {
             $command = "TERMINUS_VCR_MODE=$mode $command";
         }
-        $command = preg_replace($regex, $terminus_cmd, $command);
+        $command = 'TERMINUS_CACHE_DIR=' . $this->getConfig()->get('cache_dir') .
+          preg_replace($regex, $terminus_cmd, $command);
 
         ob_start();
         passthru($command . ' 2>&1');
