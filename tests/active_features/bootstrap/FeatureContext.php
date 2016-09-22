@@ -851,6 +851,9 @@ class FeatureContext implements ConfigAwareInterface, Context, SnippetAcceptingC
         } else {
             $command = "terminus service-level:set $service_level --site=$site";
         }
+
+        // Pass the cache directory to the command so that tests don't poison the user's cache.
+        $command = "TERMINUS_CACHE_DIR=" . $config->get('cache_dir') . " " . $command;
         $this->iRun($command);
     }
 
