@@ -5,6 +5,7 @@ namespace Pantheon\Terminus\FeatureTests;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
+use Robo\Config;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Common\ConfigAwareTrait;
 use Terminus\Exceptions\TerminusException;
@@ -36,6 +37,8 @@ class FeatureContext implements ConfigAwareInterface, Context, SnippetAcceptingC
         $this->parameters      = $parameters;
         $this->start_time      = time();
         $this->connection_info = ['host' => $parameters['host'], 'machine_token' => $parameters['machine_token'],];
+
+        $this->setConfig(new Config());
     }
 
     /**
