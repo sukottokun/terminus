@@ -23,15 +23,14 @@ Feature: CLI Commands
     """
     Answer yes to all prompts
     """
-
-    # TODO: Remove this hardcoding or express this story in a more meaningful way
+  @vcr cli_session-clear
   Scenario: Clearing a session
-    When I run "touch ~/.terminus/testcache/session"
+    Given I am authenticated
     And I run "terminus cli session-clear"
-    And I run "ls ~/.terminus/testcache"
-    Then I should not get:
+    And I run "terminus cli session-dump --format=json"
+    Then I should get:
     """
-    session
+    []
     """
 
   Scenario: Dumping an empty session
