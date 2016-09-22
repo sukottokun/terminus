@@ -26,18 +26,20 @@ Once you have at least the requirements installed, you can install Terminus via 
 
 > You can install Terminus just about anywhere on your system. In this README, we'll use `/install/location` to stand in for your chosen installation location.
 
-####Installing with Composer
 
-The fastest and easiest way to install Terminus is via Composer. Simply run this in your terminal client:
-```
-composer require pantheon-systems/terminus
-```
 
-####Installing with cURL
+####Installing with cURL (recommended)
 
 Run this in this in your terminal client:
 ```bash
-curl https://github.com/pantheon-systems/terminus/releases/download/0.13.0/terminus.phar -L -o /usr/local/bin/terminus && chmod +x /usr/local/bin/terminus
+curl https://github.com/pantheon-systems/terminus/releases/download/0.13.1/terminus.phar -L -o /usr/local/bin/terminus && chmod +x /usr/local/bin/terminus
+```
+
+####Installing with Composer
+
+Run this in your terminal client:
+```
+composer require pantheon-systems/terminus
 ```
 
 ####Installing with [Homebrew](http://brew.sh/)(for Macs)
@@ -140,26 +142,7 @@ Head over to [your support tickets in the Pantheon Dashboard](https://dashboard.
 
 Contributions
 ------------
-Here are steps to follow if you would like to contribute to Terminus:
-
-1. Fork the repository.
-2. Add your changes. Please add tests as necessary. You can check your syntax for coherence to our standards by running:
-  ```bash
-  cd /install/location/terminus
-  ./scripts/lint.sh
-  ```
-And run your tests via:
-  ```bash
-  cd /install/location/terminus
-  ./scripts/test.sh
-  ```
-Please also run the internal documentation generator before committing your changes. This keeps the documentation always up-to-date:
-  ```bash
-  cd /install/location/terminus
-  php utils/make-docs.php
-  ```
-
-3. Open a pull request on GitHub so that we may evaluate and merge your changes.
+See the [CONTRIBUTING](CONTRIBUTING.md) document.
 
 Credits
 ------------
