@@ -24,9 +24,9 @@ class ImportCommandTest extends ConnectionCommandTest
     protected function setup()
     {
         parent::setUp();
-        $this->setInput(['command' => 'site:import', 'site' => 'behat-tests', 'url' => 'https://pantheon-infrastructure.s3.amazonaws.com/testing/duplicator_export.zip']);
+        $this->setInput(['command' => 'site:import', 'site' => 'my-site', 'url' => 'https://pantheon-infrastructure.s3.amazonaws.com/testing/duplicator_export.zip']);
         
-        $this->command = new InfoCommand($this->getConfig());
+        $this->command = new ImportCommand($this->getConfig());
         $this->command->setLogger($this->logger);
         $this->prophet = new Prophet;
     }
@@ -40,10 +40,11 @@ class ImportCommandTest extends ConnectionCommandTest
 
     /**
      * Exercises site:import command with a valid site
-     *
+     * 
+     * @vcr auth_login
      * @return void
      *
-     * @vcr auth_login
+     * 
      */
     public function testSiteImport()
     {
@@ -51,7 +52,7 @@ class ImportCommandTest extends ConnectionCommandTest
     }
     
     /**
-     * Exercises connection:info command invalid site
+     * Exercises site:import command invalid site
      *
      * @return void
      */
