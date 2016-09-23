@@ -1,36 +1,42 @@
 <?php
 
+namespace Terminus\UnitTests;
+
 use Terminus\Completions;
 use Terminus\Exceptions\TerminusException;
 
 /**
  * Testing class for Terminus\Completions
  */
-class CompletionsTest extends PHPUnit_Framework_TestCase {
+class CompletionsTest extends PHPUnit_Framework_TestCase
+{
 
   /**
    * @var string
    */
-  private $command;
+    private $command;
 
   /**
    * @var Completions
    */
-  private $completions;
+    private $completions;
 
-  public function __construct() {
-    $this->command     = 'terminus cli info';
-    $this->completions = new Completions($this->command);
-  }
+    public function setUp()
+    {
+        parent::setUp();
+        $this->command     = 'terminus cli info';
+        $this->completions = new Completions($this->command);
+    }
 
-  public function testConstruct() {
-    $this->assertObjectHasAttribute('words', $this->completions);
-    $this->assertObjectHasAttribute('options', $this->completions);
-  }
+    public function testConstruct()
+    {
+        $this->assertObjectHasAttribute('words', $this->completions);
+        $this->assertObjectHasAttribute('options', $this->completions);
+    }
 
-  public function testGetOptions() {
-    $options = $this->completions->getOptions();
-    $this->assertTrue(in_array('--format=', $options));
-  }
-
+    public function testGetOptions()
+    {
+        $options = $this->completions->getOptions();
+        $this->assertTrue(in_array('--format=', $options));
+    }
 }
