@@ -25,28 +25,13 @@ class ImportCommand extends TerminusCommand
      *   Imports the file at the archive URL to the site named.
      */
     public function import(array $options = ['site' => null, 'url' => null,]) {
-        // hook into sites 
         $sites = new Sites();
-        // get site
         $site = $sites->get($options['site']);
-        // set up url
         $url = $options['url'];
-        // always import to dev
         $workflow = $site->environments->get('dev')->import($url);
-        //wait for workflow to do it's thing
         $workflow->wait();
-        //check the output and respond with the correct notice type:
-        if ($workflow->get('active_description')) {
-            $this->log()->notice("Success");
-        }
-        if ($workflow->get('final_task')->reason) {
-            new TerminusException();
-        }
-
+        $this->log()->notice("Imported site onto Pantheon");
     }   
 
 }
-
-
-
 
