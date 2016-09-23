@@ -48,6 +48,9 @@ class ImportCommandTest extends ConnectionCommandTest
      */
     public function testSiteImport()
     {
+        $site_prophet = $this->prophet->prophesize(Site::class);
+        $site_prophet->get('name')->willReturn('my_site');
+        $site = $site_prophet->reveal();
         $this->assertEquals('Hello World!', $this->runCommand()->fetchTrimmedOutput());
     }
     
