@@ -1,9 +1,11 @@
 <?php
 namespace Pantheon\Terminus\Commands\Site;
+
 use Pantheon\Terminus\Commands\TerminusCommand;
 use Terminus\Collections\Sites;
 use Terminus\Models\Environment;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+
 class ImportCommand extends TerminusCommand
 {
     /**
@@ -24,13 +26,12 @@ class ImportCommand extends TerminusCommand
      * @usage terminus import --site=<site_name> --url=<archive_url>
      *   Imports the file at the archive URL to the site named.
      */
-    public function import($site,$url) {
+    public function import($site, $url)
+    {
         $sites = new Sites();
         $website = $sites->get($site);
         $workflow = $website->environments->get('dev')->import($url);
         $workflow->wait();
         $this->log()->notice("Imported site onto Pantheon");
-    }   
-
+    }
 }
-

@@ -1,6 +1,7 @@
 <?php
 
 namespace Pantheon\Terminus\UnitTests\Commands\Connection;
+
 use Pantheon\Terminus\Commands\Site\ImportCommand;
 use Pantheon\Terminus\Config;
 
@@ -42,8 +43,9 @@ class ImportCommandTest extends ConnectionCommandTest
      */
     public function testSiteImport()
     {
-     $this->assertEquals('Hello World!', $this->runCommand()->fetchTrimmedOutput());
+        $this->assertEquals('Hello World!', $this->runCommand()->fetchTrimmedOutput());
     }
+    
     /**
      * Exercises connection:info command invalid site
      *
@@ -51,6 +53,5 @@ class ImportCommandTest extends ConnectionCommandTest
      */
     public function testSiteImportInvalidSite()
     {
-
     }
 }
