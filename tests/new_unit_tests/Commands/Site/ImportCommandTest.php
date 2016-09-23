@@ -23,9 +23,7 @@ class ImportCommandTest extends ConnectionCommandTest
     protected function setup()
     {
         parent::setUp();
-        $this->command = new ImportCommand($this->getConfig());
-        $this->command->setLogger($this->logger);
-        $this->prophet = new Prophet;
+        $this->setInput(['command' => 'site:import', 'site' => '', 'url' => '']);
     }
 
     protected function tearDown()
@@ -44,7 +42,7 @@ class ImportCommandTest extends ConnectionCommandTest
      */
     public function testSiteImport()
     {
-        
+     $this->assertEquals('Hello World!', $this->runCommand()->fetchTrimmedOutput());
     }
     /**
      * Exercises connection:info command invalid site

@@ -24,11 +24,10 @@ class ImportCommand extends TerminusCommand
      * @usage terminus import --site=<site_name> --url=<archive_url>
      *   Imports the file at the archive URL to the site named.
      */
-    public function import(array $options = ['site' => null, 'url' => null,]) {
+    public function import($site,$url) {
         $sites = new Sites();
-        $site = $sites->get($options['site']);
-        $url = $options['url'];
-        $workflow = $site->environments->get('dev')->import($url);
+        $website = $sites->get($site);
+        $workflow = $website->environments->get('dev')->import($url);
         $workflow->wait();
         $this->log()->notice("Imported site onto Pantheon");
     }   
