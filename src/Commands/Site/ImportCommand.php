@@ -8,16 +8,17 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class ImportCommand extends TerminusCommand
 {
-
     /**
      * Imports a site archive onto a Pantheon site
+     *
+     * @authorized
      *
      * @name site:import
      * @alias import
      * @field-labels
      *   site: Environment
      *   url: Parameter
-     * @authorized
+     * 
      * @option string $site Name of the site to import to
      * @option string $url  URL at which the import archive exists
      * @usage terminus import --site=<site_name> --url=<archive_url>
