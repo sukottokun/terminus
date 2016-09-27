@@ -15,10 +15,7 @@ class ImportCommand extends TerminusCommand
      *
      * @name site:import
      * @alias import
-     * @field-labels
-     *   site: Environment
-     *   url: Parameter
-     * 
+     *
      * @option string $site Name of the site to import to
      * @option string $url  URL at which the import archive exists
      * @usage terminus import --site=<site_name> --url=<archive_url>
@@ -26,8 +23,9 @@ class ImportCommand extends TerminusCommand
      */
     public function import($sitename, $url)
     {
+        print_r($sitename);
         $sites = new Sites(); 
-        $site = $sites->get($site);
+        $site = $sites->get($site); 
         $workflow = $site->environments->get('dev')->import($url);
         $workflow->wait();
         $this->log()->notice("Imported site onto Pantheon");
