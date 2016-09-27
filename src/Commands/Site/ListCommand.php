@@ -72,16 +72,6 @@ class ListCommand extends TerminusCommand
         $all_sites = array_map(
             function ($site) {
 
-                $memberships = array_map(
-                    function ($membership)
-                    {
-                        $org_data = $membership->serialize();
-                        return "{$org_data['org_id']}: {$org_data['org_name']}";
-                    },
-                    $site->org_memberships->all()
-                );
-
-
                 $site_data = $site->serialize();
                 return [
                     'name'          => $site_data['name'],
@@ -90,7 +80,7 @@ class ListCommand extends TerminusCommand
                     'framework'     => $site_data['framework'],
                     'owner'         => $site_data['owner'],
                     'created'       => $site_data['created'],
-                    'memberships'   => implode(',', $memberships),
+                    'memberships'   => implode(',', $site->memberships),
                 ];
             },
             $sites->all()
