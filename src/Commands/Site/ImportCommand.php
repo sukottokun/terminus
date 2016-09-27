@@ -2,12 +2,13 @@
 namespace Pantheon\Terminus\Commands\Site;
 
 use Pantheon\Terminus\Commands\TerminusCommand;
-use Terminus\Collections\Sites;
-use Terminus\Models\Environment;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Pantheon\Terminus\Site\SiteAwareInterface;
+use Pantheon\Terminus\Site\SiteAwareTrait;
+use Terminus\Exceptions\TerminusException;
 
-class ImportCommand extends TerminusCommand
+class ImportCommand extends TerminusCommand implements SiteAwareInterface
 {
+    use SiteAwareTrait;
     /**
      * Imports a site archive onto a Pantheon site
      *
@@ -23,11 +24,16 @@ class ImportCommand extends TerminusCommand
      */
     public function import($sitename, $url)
     {
-        print_r($sitename);
-        $sites = new Sites(); 
-        $site = $sites->get($site); 
-        $workflow = $site->environments->get('dev')->import($url);
-        $workflow->wait();
-        $this->log()->notice("Imported site onto Pantheon");
-    }
+        $site = $sitename.'.dev';
+        list(, $env) = $this->getSiteEnv($site);
+        $workflow = $env->import($url);
+        try{$workflow->wait();}
+        catch(\Exception $e){
+          if($e->getMessage() == "Successfully queued import_site"){
+            throw new TerminusException("Site import failed");
+            }
+            throw $e;
+        }
+    $this->log()->notice("Imported site onto Pantheon");
+}
 }

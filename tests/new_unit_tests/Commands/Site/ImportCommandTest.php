@@ -1,21 +1,18 @@
 <?php
 
-namespace Pantheon\Terminus\UnitTests\Commands\Connection;
+namespace Pantheon\Terminus\UnitTests\Commands\Site;
 
 use Pantheon\Terminus\Commands\Site\ImportCommand;
-use Pantheon\Terminus\Config;
-
-use Prophecy\Prophet;
-use Terminus\Models\Environment;
-use Terminus\Models\Site;
-use VCR\VCR;
+use Terminus\Exceptions\TerminusException;
+use Pantheon\Terminus\UnitTests\Commands\CommandTestCase;
+use Terminus\Models\Workflow;
 
 /**
- * Test suite for class for Pantheon\Terminus\Commands\Connection\ImportCommand
+ * Test suite for class for Pantheon\Terminus\Commands\Site\ImportCommand
  */
-class ImportCommandTest extends ConnectionCommandTest
+class ImportCommandTest extends CommandTestCase
 {
-    private $prophet;
+
     /**
      * Test suite setup
      *
@@ -24,38 +21,35 @@ class ImportCommandTest extends ConnectionCommandTest
     protected function setup()
     {
         parent::setUp();
-        $this->setInput(['command' => 'site:import', 'site' => 'my-site',
-            'url' => 'https://pantheon-infrastructure.s3.amazonaws.com/testing/duplicator_export.zip']);
         $this->command = new ImportCommand($this->getConfig());
+        $this->command->setSites($this->sites);
         $this->command->setLogger($this->logger);
     }
     
-    protected function tearDown()
-    {
-        parent::tearDown();
-    }
-
-
     /**
-     * Exercises site:import command with a valid site
+     * Exercises site:import command with a valid url
      *
-     * @vcr auth_login
      * @return void
      *
-     *
      */
-    public function testSiteImport()
+    public function testSiteImportValidURL()
     {
+        // $this->assertTrue(false);
+        $workflow = $this->getMockBuilder(Workflow::class)
+        ->disableOriginalConstructor()
+        ->getMock();
 
-    }
-    
-    /**
-     * Exercises site:import command invalid site
-     *
-     * @return void
-     */
-    public function testSiteImportInvalidSite()
-    {
+        $workflow->expects($this->once())->method('wait')->willReturn(true);
 
+        $this->environment->expects($this->once())->method('import')
+        ->with($this->equalTo('a-valid-url'))->willReturn($workflow);
+        $this->logger->expects($this->once())
+        ->method('log')->with(
+            $this->equalTo('notice'),
+            $this->equalTo('Imported site onto Pantheon')
+        );
+
+        $this->command->import('dummy-site', 'a-valid-url');
     }
+
 }
