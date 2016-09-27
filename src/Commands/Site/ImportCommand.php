@@ -14,8 +14,8 @@ class ImportCommand extends TerminusCommand implements SiteAwareInterface
      *
      * @authorized
      *
-     * @name site:import
-     * @alias import
+     * @name import
+     * @alias site:import
      *
      * @option string $site Name of the site to import to
      * @option string $url  URL at which the import archive exists
