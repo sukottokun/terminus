@@ -391,7 +391,7 @@ class Site extends TerminusModel
     public function getOrganizations()
     {
         $memberships = $this->org_memberships->all();
-        $users = array_combine(
+        $orgs = array_combine(
             array_map(
                 function ($membership) {
                     return $membership->organization->id;
@@ -536,18 +536,18 @@ class Site extends TerminusModel
     public function serialize()
     {
         $data = [
-        'id'            => $this->id,
-        'name'          => $this->get('name'),
-        'label'         => $this->get('label'),
-        'created'       => date(Config::get('date_format'), $this->get('created')),
-        'framework'     => $this->get('framework'),
-        'organization'  => $this->get('organization'),
-        'service_level' => $this->get('service_level'),
-        'upstream'      => $this->upstream->serialize(),
-        'php_version'   => $this->get('php_version'),
-        'holder_type'   => $this->get('holder_type'),
-        'holder_id'     => $this->get('holder_id'),
-        'owner'         => $this->get('owner'),
+            'id'            => $this->id,
+            'name'          => $this->get('name'),
+            'label'         => $this->get('label'),
+            'created'       => date(Config::get('date_format'), $this->get('created')),
+            'framework'     => $this->get('framework'),
+            'organization'  => $this->get('organization'),
+            'service_level' => $this->get('service_level'),
+            'upstream'      => $this->upstream,
+            'php_version'   => $this->get('php_version'),
+            'holder_type'   => $this->get('holder_type'),
+            'holder_id'     => $this->get('holder_id'),
+            'owner'         => $this->get('owner'),
         ];
         if ((boolean)$this->get('frozen')) {
             $data['frozen'] = true;
