@@ -45,7 +45,6 @@ class InfoCommand extends TerminusCommand implements SiteAwareInterface
      */
     public function lookup($site)
     {
-        $response = $this->sites->get($site)->serialize();
-        return new AssociativeList($response);
+        return new AssociativeList($this->sites->get($site)->serialize());
     }
 }
