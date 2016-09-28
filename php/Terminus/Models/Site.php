@@ -511,7 +511,7 @@ class Site extends TerminusModel
         'framework'     => $this->get('framework'),
         'organization'  => $this->get('organization'),
         'service_level' => $this->get('service_level'),
-        'upstream'      => $this->upstream->serialize(),
+        'upstream'      => (string)$this->upstream,
         'php_version'   => $this->get('php_version'),
         'holder_type'   => $this->get('holder_type'),
         'holder_id'     => $this->get('holder_id'),

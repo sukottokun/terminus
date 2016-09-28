@@ -27,6 +27,14 @@ class Upstream extends TerminusModel
         }
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function __toString()
+    {
+        return "{$this->site->id}: {$this->url}";
+    }
+
   /**
    * Fetches this object from Pantheon
    *
