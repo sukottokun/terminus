@@ -27,13 +27,14 @@ class ImportCommand extends TerminusCommand implements SiteAwareInterface
         $site = $sitename.'.dev';
         list(, $env) = $this->getSiteEnv($site);
         $workflow = $env->import($url);
-        try{$workflow->wait();}
-        catch(\Exception $e){
-          if($e->getMessage() == "Successfully queued import_site"){
-            throw new TerminusException("Site import failed");
+        try {
+            $workflow->wait();
+        } catch (\Exception $e) {
+            if ($e->getMessage() == "Successfully queued import_site") {
+                throw new TerminusException("Site import failed");
             }
             throw $e;
         }
-    $this->log()->notice("Imported site onto Pantheon");
-}
+        $this->log()->notice("Imported site onto Pantheon");
+    }
 }

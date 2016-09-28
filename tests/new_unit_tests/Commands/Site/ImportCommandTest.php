@@ -51,5 +51,4 @@ class ImportCommandTest extends CommandTestCase
 
         $this->command->import('dummy-site', 'a-valid-url');
     }
-
 }
