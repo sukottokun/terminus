@@ -32,7 +32,7 @@ class Upstream extends TerminusModel
      */
     public function __toString()
     {
-        return "{$this->site->id}: {$this->url}";
+        return "{$this->id}: {$this->url}";
     }
 
   /**
@@ -45,7 +45,7 @@ class Upstream extends TerminusModel
     {
         $options = array_merge(['options' => ['method' => 'get',],], $this->args, $args);
         $results = $this->request->request($this->url, $options);
-        $this->attributes = $this->parseAttributes($results['data']->upstream);
+        $this->attributes = (object)array_merge((array)$this->attributes, (array)$this->parseAttributes($results['data']->upstream));
         return $this;
     }
 
@@ -85,6 +85,17 @@ class Upstream extends TerminusModel
         $updates = $this->getUpdates();
         $has_updates = ($updates->behind > 0);
         return $has_updates;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function parseAttributes($data)
+    {
+        if (property_exists($data, 'product_id')) {
+            $data->id = $data->product_id;
+        }
+        return $data;
     }
 
   /**
