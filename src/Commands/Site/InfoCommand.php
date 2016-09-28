@@ -4,10 +4,13 @@ namespace Pantheon\Terminus\Commands\Site;
 
 use Consolidation\OutputFormatters\StructuredData\AssociativeList;
 use Pantheon\Terminus\Commands\TerminusCommand;
-use Terminus\Collections\Sites;
+use Pantheon\Terminus\Site\SiteAwareInterface;
+use Pantheon\Terminus\Site\SiteAwareTrait;
 
-class InfoCommand extends TerminusCommand
+class InfoCommand extends TerminusCommand implements SiteAwareInterface
 {
+    use SiteAwareTrait;
+
     /**
      * Gets full site information
      *
@@ -40,19 +43,9 @@ class InfoCommand extends TerminusCommand
      *   * Responds that a site does not exist
      * @return AssociativeList
      */
-    public function lookup($site, $options = ['field' => null])
+    public function lookup($site)
     {
-        $sites = new Sites();
-
-        $response = $sites->get($site)->serialize();
-        // Hopefully temporary fix for outputting the upstream (which is an array)
-        foreach ($response as &$value) {
-            if (is_array($value)) {
-                // If it's null (null means full table view), use newline, otherwise use commas
-                $value = is_null($options['field']) ? implode("\n", $value) : implode(", ", $value);
-            }
-        }
-
+        $response = $this->sites->get($site)->serialize();
         return new AssociativeList($response);
     }
 }
