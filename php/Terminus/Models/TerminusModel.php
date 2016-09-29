@@ -6,25 +6,25 @@ use Terminus\Request;
 
 abstract class TerminusModel
 {
-  /**
-   * @var string
-   */
+    /**
+     * @var string
+     */
     public $id;
-  /**
-   * @var array Arguments for fetching this model's information
-   */
+    /**
+     * @var Request
+     */
+    public $request;
+    /**
+     * @var array Arguments for fetching this model's information
+     */
     protected $args = [];
-  /**
-   * @var object
-   */
+    /**
+     * @var object
+     */
     protected $attributes;
-  /**
-   * @var Request
-   */
-    protected $request;
-  /**
-   * @var string The URL at which to fetch this model's information
-   */
+    /**
+     * @var string The URL at which to fetch this model's information
+     */
     protected $url;
 
   /**

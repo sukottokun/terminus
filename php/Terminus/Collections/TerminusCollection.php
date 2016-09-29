@@ -24,14 +24,18 @@ abstract class TerminusCollection
    */
     protected $paged = false;
 
-  /**
-   * Instantiates the collection, sets param members as properties
-   *
-   * @param array $options Options with which to configure this collection
-   */
+    /**
+     * Instantiates the collection, sets param members as properties
+     *
+     * @param array $options Options with which to configure this collection
+     *        array data Data with which to initialize the model members of this collection
+     */
     public function __construct(array $options = [])
     {
         $this->request = new Request();
+        if (isset($options['data'])) {
+            $this->fetch($options['data']);
+        }
     }
 
   /**
@@ -43,10 +47,7 @@ abstract class TerminusCollection
    */
     public function add($model_data, array $options = [])
     {
-        $options = array_merge(
-            ['id' => $model_data->id, 'collection' => $this,],
-            $options
-        );
+        $options = array_merge(['collection' => $this,], $options);
         $model = new $this->collected_class($model_data, $options);
         $this->models[$model_data->id] = $model;
         return $model;
@@ -67,14 +68,15 @@ abstract class TerminusCollection
   /**
    * Fetches model data from API and instantiates its model instances
    *
-   * @param array $options params to pass to url request
+   * @param array $options params to pass configure fetching
+   *        array $data Data to fill in the model members of this collection
    * @return TerminusCollection $this
    */
     public function fetch(array $options = [])
     {
-        $results = $this->getCollectionData($options);
+        $data = isset($options['data']) ? $options['data'] : $this->getCollectionData($options);
 
-        foreach ($results['data'] as $id => $model_data) {
+        foreach ($data as $id => $model_data) {
             if (!isset($model_data->id)) {
                 $model_data->id = $id;
             }
@@ -155,7 +157,7 @@ abstract class TerminusCollection
    * Retrieves collection data from the API
    *
    * @param array $options params to pass to url request
-   * @return array
+   * @return object
    */
     protected function getCollectionData($options = [])
     {
@@ -170,7 +172,7 @@ abstract class TerminusCollection
             $results = $this->request->request($this->url, $args);
         }
 
-        return $results;
+        return $results['data'];
     }
 
   /**

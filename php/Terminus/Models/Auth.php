@@ -11,10 +11,6 @@ use Terminus\Session;
 class Auth extends TerminusModel
 {
   /**
-   * @var Request
-   */
-    protected $request;
-  /**
    * @var TokensCache
    */
     private $tokens_cache;
@@ -28,8 +24,7 @@ class Auth extends TerminusModel
     public function __construct($attributes = null, array $options = [])
     {
         $this->tokens_cache = new TokensCache();
-        $this->attributes = $attributes;
-        $this->request = new Request();
+        parent::__construct($attributes, $options);
     }
 
   /**

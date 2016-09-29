@@ -4,9 +4,15 @@ All notable changes to this project starting with the 0.6.0 release will be docu
 ## MASTER
 ### Added
 - `Environment::serialize()` (#1251)
+- `Tags` collection with `Tags::create()` function. (#1272)
+- `Tag` model with `Tag::delete()` function. (#1272)
 
 ### Removed
 - `Environment::info()` has been removed. Please use `Environment::serialize()` instead. (#1251)
+- `Site::getTags()` has been removed. Please use `Tags::all()` or `Tags::ids()` via the OrganizationSiteMembership's tags property.
+- `Site::hasTag()` has been removed. Please use `Tags::get()` via the OrganizationSiteMembership's tags property.
+- `Site::removeTag()` has been removed. Please use `Tag::delete()` via the OrganizationSiteMembership's tags property's member representing the tag to be removed.
+- `Site::addTag()` has been removed. Please use `Tags::create()` via the OrganizationSiteMembership's tags property.
 
 ## [0.13.2] - 2016-09-26
 ### Fixed
