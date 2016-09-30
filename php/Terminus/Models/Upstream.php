@@ -17,13 +17,9 @@ class Upstream extends TerminusModel
    */
     public function __construct($attributes, array $options = [])
     {
-        if (isset($attributes->product_id)) {
-            $attributes->id = $attributes->product_id;
-        }
         parent::__construct($attributes, $options);
         if (isset($options['site'])) {
             $this->site = $options['site'];
-            $this->url  = "sites/{$this->site->id}?site_state=true";
         }
     }
 
@@ -33,26 +29,6 @@ class Upstream extends TerminusModel
     public function __toString()
     {
         return "{$this->id}: {$this->get('url')}";
-    }
-
-  /**
-   * Fetches this object from Pantheon
-   *
-   * @param array $args Params to pass to request
-   * @return TerminusModel $this
-   */
-    public function fetch(array $args = [])
-    {
-        $options = array_merge(['options' => ['method' => 'get',],], $this->args, $args);
-        $results = $this->request->request($this->url, $options);
-        $this->attributes = (object)array_merge(
-            (array)$this->attributes,
-            (array)$this->parseAttributes($results['data']->upstream)
-        );
-        if (property_exists($data, 'upstream')) {
-            $this->upstream = new Upstream($data->upstream, ['site' => $this,]);
-        }
-        return $this;
     }
 
   /**
@@ -107,5 +83,17 @@ class Upstream extends TerminusModel
         'status' => $this->getStatus(),
         ];
         return $data;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function parseAttributes($data)
+    {
+        if (property_exists($data, 'product_id')) {
+            $data->id = $data->product_id;
+        }
+        return $data;
+
     }
 }

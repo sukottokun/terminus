@@ -30,6 +30,7 @@ class InfoCommand extends TerminusCommand implements SiteAwareInterface
      *   holder_id: Holder ID
      *   owner: Owner
      * @param string $site Name|UUID of a site to look up
+     *
      * @usage terminus site:info <site>
      *   * Responds with the table view of site information
      *   * Responds that you are forbidden if you access a site that exists
@@ -42,7 +43,7 @@ class InfoCommand extends TerminusCommand implements SiteAwareInterface
      *   * Responds that a site does not exist
      * @return AssociativeList
      */
-    public function lookup($site)
+    public function info($site)
     {
         return new AssociativeList($this->sites->get($site)->serialize());
     }
