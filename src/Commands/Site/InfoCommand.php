@@ -30,7 +30,6 @@ class InfoCommand extends TerminusCommand implements SiteAwareInterface
      *   holder_id: Holder ID
      *   owner: Owner
      * @param string $site Name|UUID of a site to look up
-     * @option field Individual field to return from requested site
      * @usage terminus site:info <site>
      *   * Responds with the table view of site information
      *   * Responds that you are forbidden if you access a site that exists
