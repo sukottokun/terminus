@@ -24,8 +24,8 @@ class ImportCommand extends TerminusCommand implements SiteAwareInterface
      */
     public function import($sitename, $url)
     {
-        $site = $sitename.'.dev';
-        list(, $env) = $this->getSiteEnv($site);
+        $site = $sitename;
+        list(, $env) = $this->getSiteEnv($site, 'dev');
         $workflow = $env->import($url);
         try {
             $workflow->wait();
