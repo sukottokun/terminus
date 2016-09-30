@@ -94,6 +94,5 @@ class Upstream extends TerminusModel
             $data->id = $data->product_id;
         }
         return $data;
-
     }
 }
