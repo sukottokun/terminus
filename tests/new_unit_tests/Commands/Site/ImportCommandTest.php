@@ -46,7 +46,7 @@ class ImportCommandTest extends CommandTestCase
             ->method('log')->with(
                 $this->equalTo('notice'),
                 $this->equalTo('Imported site onto Pantheon')
-                );
+            );
 
         $this->command->import('dummy-site', 'a-valid-url');
     }
