@@ -34,20 +34,19 @@ class ImportCommandTest extends CommandTestCase
      */
     public function testSiteImportValidURL()
     {
-        // $this->assertTrue(false);
         $workflow = $this->getMockBuilder(Workflow::class)
-        ->disableOriginalConstructor()
-        ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $workflow->expects($this->once())->method('wait')->willReturn(true);
 
         $this->environment->expects($this->once())->method('import')
-        ->with($this->equalTo('a-valid-url'))->willReturn($workflow);
+            ->with($this->equalTo('a-valid-url'))->willReturn($workflow);
         $this->logger->expects($this->once())
-        ->method('log')->with(
-            $this->equalTo('notice'),
-            $this->equalTo('Imported site onto Pantheon')
-        );
+            ->method('log')->with(
+                $this->equalTo('notice'),
+                $this->equalTo('Imported site onto Pantheon')
+                );
 
         $this->command->import('dummy-site', 'a-valid-url');
     }

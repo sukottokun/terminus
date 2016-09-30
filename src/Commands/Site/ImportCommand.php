@@ -15,11 +15,11 @@ class ImportCommand extends TerminusCommand implements SiteAwareInterface
      * @authorized
      *
      * @name site:import
-     * @alias import
+     * @aliases import
      *
      * @option string $site Name of the site to import to
      * @option string $url  URL at which the import archive exists
-     * @usage terminus import --site=<site_name> --url=<archive_url>
+     * @usage terminus import <site_name> <archive_url>
      *   Imports the file at the archive URL to the site named.
      */
     public function import($sitename, $url)
