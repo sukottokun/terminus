@@ -14,6 +14,7 @@ class DeployCommand extends TerminusCommand implements SiteAwareInterface
      * Deploy the dev environment to test or live.
      *
      * @command env:deploy
+     * @aliases deploy
      *
      * @param string $site_env Site & environment to deploy to, in the form `site-name.env`.
      *
@@ -31,7 +32,6 @@ class DeployCommand extends TerminusCommand implements SiteAwareInterface
                                     'cc' => false,
                                     'updatedb' => false,])
     {
-        // @TODO: Switch this to the standard site.env input format?
         list(, $env) = $this->getSiteEnv($site_env, 'dev');
 
         if (!$env->hasDeployableCode()) {
@@ -51,6 +51,6 @@ class DeployCommand extends TerminusCommand implements SiteAwareInterface
 
         $workflow = $env->deploy($params);
         $workflow->wait();
-        $this->workflowOutput($workflow, ['failure' => 'Deployment failed.',]);
+        return $workflow->getMessage();
     }
 }
